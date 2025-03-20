@@ -9,7 +9,7 @@ app.use(express.json());
 
 app.post('/proxy', async (req, res) => {
   try {
-    const googleScriptURL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+    const googleScriptURL = 'https://script.google.com/macros/s/AKfycbzGMPOr5r1wbCBTdI-7Z85Xtz18SCLuuZ7jIOZTfrV_E93jkk1iWIp-db4kjNkTf8rICQ/exec';
     const response = await fetch(googleScriptURL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

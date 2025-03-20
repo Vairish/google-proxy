@@ -1,18 +1,11 @@
 const express = require('express');
 const fetch = require('node-fetch');
+const cors = require('cors');
 const app = express();
-app.use(express.json());
 
-// ✅ CORS Middleware
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200); // Preflight request
-  }
-  next();
-});
+// ✅ Apply CORS middleware globally
+app.use(cors());
+app.use(express.json());
 
 app.post('/proxy', async (req, res) => {
   try {
@@ -30,6 +23,8 @@ app.post('/proxy', async (req, res) => {
   }
 });
 
+// Optional health check
 app.get('/', (req, res) => res.send('Proxy is running'));
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Proxy server running on port ${PORT}`));

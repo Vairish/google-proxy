@@ -3,17 +3,26 @@ const fetch = require('node-fetch');
 const app = express();
 app.use(express.json());
 
+// ✅ CORS Middleware
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200); // Preflight request
+  }
+  next();
+});
+
 app.post('/proxy', async (req, res) => {
   try {
-    const googleScriptURL = 'https://script.google.com/macros/s/AKfycbzGMPOr5r1wbCBTdI-7Z85Xtz18SCLuuZ7jIOZTfrV_E93jkk1iWIp-db4kjNkTf8rICQ/exec';
+    const googleScriptURL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
     const response = await fetch(googleScriptURL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(req.body)
     });
     const data = await response.text();
-    res.set('Access-Control-Allow-Origin', '*');
-    res.set('Access-Control-Allow-Headers', 'Content-Type');
     res.send(data);
   } catch (err) {
     console.error('Proxy error:', err);
@@ -21,8 +30,6 @@ app.post('/proxy', async (req, res) => {
   }
 });
 
-// Optional: Health check route
 app.get('/', (req, res) => res.send('Proxy is running'));
-
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Proxy server running on port ${PORT}`));
